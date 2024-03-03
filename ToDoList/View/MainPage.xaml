@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ToDoList.MainPage"
+             xmlns:ToDoList="clr-namespace:ToDoList"
+             xmlns:vm="clr-namespace:ToDoList.ViewModel"
+             x:DataType="vm:ToDoListViewModel"
+             Title="{Binding Title}">
+
+    <ScrollView>
+        <VerticalStackLayout
+            Spacing="25"
+            Padding="30,0"
+            VerticalOptions="Center">
+
+            <HorizontalStackLayout>
+                <Entry HorizontalOptions="StartAndExpand" Text="{Binding NewTaskDescription}"></Entry>
+                <Button HorizontalOptions="EndAndExpand" Command="{Binding AddTaskCommand}" Text="+"></Button>
+            </HorizontalStackLayout>
+
+            <ListView ItemsSource="{Binding TaskList}" RowHeight="50">
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="vm:TaskItem">
+                        <ViewCell>
+                            <ViewCell.View>
+                                <HorizontalStackLayout Spacing="16">
+                                    <ImageButton WidthRequest="16" HeightRequest="16">
+                                        <ImageButton.Triggers>
+                                            <DataTrigger TargetType="ImageButton" Binding="{Binding IsDone}" Value="False">
+                                                <Setter Property="Source" Value="icon_square.png"/>
+
+                                                <Setter Property="Command" Value="{Binding Source={RelativeSource FindAncestorBindingContext, 
+                                                    AncestorType={x:Type vm:ToDoListViewModel}}, Path=DoneTaskCommand}" />
+                                                <Setter Property="CommandParameter" Value="{Binding .}" />
+                                            </DataTrigger>
+                                            <DataTrigger TargetType="ImageButton" Binding="{Binding IsDone}" Value="True">
+                                                <Setter Property="Source" Value="icon_check.png"/>
+                                                <Setter Property="IsEnabled" Value="False" />
+                                            </DataTrigger>
+                                        </ImageButton.Triggers>
+                                    </ImageButton>
+
+                                    <Label VerticalOptions="Center">
+                                        <Label.Triggers>
+                                            <DataTrigger TargetType="Label" Binding="{Binding IsDone}" Value="False">
+                                                <Setter Property="Text" Value="{Binding Description}"/>
+
+                                            </DataTrigger>
+                                            <DataTrigger TargetType="Label" Binding="{Binding IsDone}" Value="True">
+                                                <Setter Property="Text" Value="{Binding Description}"/>
+                                                <Setter Property="TextDecorations" Value="Strikethrough" />
+                                            </DataTrigger>
+                                        </Label.Triggers>
+                                    </Label>
+
+                                    <Button Text="Удалить" 
+                                            Command="{Binding Source={RelativeSource FindAncestorBindingContext, 
+                                                    AncestorType={x:Type vm:ToDoListViewModel}}, Path=DeleteTaskCommand}"
+                                            CommandParameter="{Binding .}"/>
+                                </HorizontalStackLayout>
+                            </ViewCell.View>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
+
+
+
